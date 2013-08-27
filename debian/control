@@ -1,0 +1,18 @@
+Source: nutcracker
+Section: net
+Priority: optional
+Maintainer: Esteban Santana Santana <MentalPower@GMail.com>
+Build-Depends: debhelper (>= 9.0.0), dh-autoreconf, hardening-wrapper
+Standards-Version: 3.9.3
+Homepage: https://github.com/twitter/twemproxy
+
+Package: nutcracker
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: twemproxy (<< 0.2.0)
+Provides: twemproxy
+Conflicts: twemproxy (<< 0.2.0)
+Description: Provides a fast, light-weight proxy for memcached
+ twemproxy (pronounced "two-em-proxy"), aka nutcracker is a fast and
+ lightweight proxy for memcached protocol. It was primarily built to
+ reduce the connection count on the backend caching servers.
