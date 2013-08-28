@@ -1,3 +1,9 @@
+nutcracker (0.2.4-1ubuntu2) precise; urgency=low
+
+  * Updated the init script to not always exit.
+
+ -- Esteban Santana Santana <MentalPower@GMail.com>  Wed, 28 Aug 2013 10:19:40 -0500
+
 nutcracker (0.2.4-1ubuntu1) precise; urgency=low
 
   [ Esteban Santana Santana ]

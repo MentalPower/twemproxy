@@ -34,8 +34,15 @@ DAEMON_OPTS="-d -s ${STATS_PORT} -i ${STATS_INTERVAL} -c ${CONF_FILE} -p ${PIDFI
 . /lib/lsb/init-functions
 
 #Make sure our config file and executable actually exist.
-test -f ${CONF_FILE} || echo "Please fill config file in ${CONF_FILE} and restart."; exit 0
-test -x ${DAEMON} || echo "Daemon ${DAEMON} does not exist."; exit 0
+if [ ! -f ${CONF_FILE} ]; then
+    echo "Please fill config file in ${CONF_FILE} and restart."
+    exit 0
+fi
+
+if [ ! -x ${DAEMON} ]; then
+    echo "Daemon ${DAEMON} does not exist."
+    exit 0
+fi
 
 #Make sure our /var/run directory is there
 mkdir -p ${RUNDIR}
@@ -55,7 +62,7 @@ test_config() {
 case "$1" in
 
     start)
-	echo -n "Starting ${DESC}: "
+        echo -n "Starting ${DESC}: "
         test_config
         # Check if the MAX_FDS limit is set in /etc/default/nutcracker
         if [ -n "${MAX_FDS}" ]; then
@@ -63,25 +70,25 @@ case "$1" in
             ulimit -n ${MAX_FDS}
         fi
         mkdir -p ${LOGDIR}
-	touch ${LOGFILE}
+        touch ${LOGFILE}
         chown -R nobody:nogroup ${LOGDIR}
-	chmod 755 ${LOGDIR}
-	mkdir -p ${RUNDIR}
-	touch ${PIDFILE}
-	chown -R nobody:nogroup ${RUNDIR}
-	chmod 755 ${RUNDIR}
-	start-stop-daemon --start --quiet --umask 007 --pidfile ${PIDFILE} \
+        chmod 755 ${LOGDIR}
+        mkdir -p ${RUNDIR}
+        touch ${PIDFILE}
+        chown -R nobody:nogroup ${RUNDIR}
+        chmod 755 ${RUNDIR}
+        start-stop-daemon --start --quiet --umask 007 --pidfile ${PIDFILE} \
             --chuid nobody:nogroup --exec ${DAEMON} -- ${DAEMON_OPTS} || true
         echo "${NAME}."
-	;;
+    ;;
 
     stop)
-	echo -n "Stopping ${DESC}: "
-	start-stop-daemon --stop --quiet --pidfile ${PIDFILE} \
-            --exec ${DAEMON} || true
-	echo "${NAME}."
-	rm -f ${RUNDIR}/*
-	;;
+        echo -n "Stopping ${DESC}: "
+        start-stop-daemon --stop --quiet --pidfile ${PIDFILE} \
+                --exec ${DAEMON} || true
+        echo "${NAME}."
+        rm -f ${RUNDIR}/*
+    ;;
 
     restart|force-reload)
         test_config
@@ -91,7 +98,7 @@ case "$1" in
         start-stop-daemon --start --quiet --umask 007 --pidfile ${PIDFILE} \
             --chuid nobody:nogroup --exec ${DAEMON} -- ${DAEMON_OPTS} || true
         echo "${NAME}."
-	;;
+    ;;
 
     reload)
         echo -n "Reloading ${DESC} configuration: "
@@ -115,9 +122,9 @@ case "$1" in
         ;;
 
     *)
-	echo "Usage: /etc/init.d/${NAME} {start|stop|status|restart|force-reload|configtest|testconfig}" >&2
-	exit 1
-	;;
+    echo "Usage: /etc/init.d/${NAME} {start|stop|status|restart|force-reload|configtest|testconfig}" >&2
+    exit 1
+    ;;
 
 esac
 
